@@ -31,6 +31,8 @@ public class NoiseTextureGenerator : MonoBehaviour {
             }
         }
 
+        texture.filterMode = FilterMode.Point;
+
         texture.Apply();
         return texture;
     }

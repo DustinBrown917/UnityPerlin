@@ -12,6 +12,9 @@ public class PerlinGenerator : MonoBehaviour {
 
     [SerializeField] private int repeat = -1;
     [SerializeField] private float scale = 20.0f;
+    [SerializeField] private int octaves = 1;
+    [SerializeField] private float persistence = 1.0f;
+    [SerializeField] private float step = -1.0f;
 
     static PerlinGenerator()
     {
@@ -81,17 +84,35 @@ public class PerlinGenerator : MonoBehaviour {
         }
     }
 
-    public float GetSteppedPerlin(float x, float y, float z, float step)
+    public float GetPerlin(float x, float y, float z)
     {
-        float noise = GetPerlin(x, y, z);
+        float totalNoise = 0;
+        float frequency = 1;
+        float amplitude = 1;
+        float maxPossibleNoise = 0;
 
-        if(noise >= step) { noise = 1; }
-        else { noise = 0; }
+        for (int i = 0; i < octaves; i++)
+        {
+            totalNoise += GetSimplePerlin(x * frequency, y * frequency, z * frequency) * amplitude;
 
-        return noise;
+            maxPossibleNoise += amplitude;
+
+            amplitude *= persistence;
+            frequency *= 2;
+        }
+
+        float finalNoise = totalNoise / maxPossibleNoise;
+
+        if(step > 0)
+        {
+            if (finalNoise >= step) { finalNoise = 1; }
+            else { finalNoise = 0; }
+        }
+
+        return finalNoise;
     }
 
-    public float GetPerlin(float x, float y, float z)
+    public float GetSimplePerlin(float x, float y, float z)
     {
         //Handle scale
         x *= scale;
