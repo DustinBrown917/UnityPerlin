@@ -14,7 +14,8 @@ public class PerlinGenerator : MonoBehaviour {
     [SerializeField] private float scale = 20.0f;
     [SerializeField] private int octaves = 1;
     [SerializeField] private float persistence = 1.0f;
-    [SerializeField] private float step = -1.0f;
+    [SerializeField] private float[] steps;
+    private float stepValue;
 
     static PerlinGenerator()
     {
@@ -37,13 +38,13 @@ public class PerlinGenerator : MonoBehaviour {
 
         int baseIndex;
 
-        for(int repeats = 0; repeats < permutationRepeats; repeats++)
+        for (int repeats = 0; repeats < permutationRepeats; repeats++)
         {
             baseIndex = repeats * permutationLength;
-            if(baseIndex >= permutation.Length) { baseIndex = permutation.Length - 1; }
+            if (baseIndex >= permutation.Length) { baseIndex = permutation.Length - 1; }
 
             copiedNums = new List<int>(orderedNums);
-            
+
             int targetIndex;
             for (int i = 0; i < permutationLength; i++)
             {
@@ -91,6 +92,13 @@ public class PerlinGenerator : MonoBehaviour {
         float amplitude = 1;
         float maxPossibleNoise = 0;
 
+        if(steps.Length > 0)
+        {
+            stepValue = 1.0f / steps.Length;
+        }
+        
+        
+
         for (int i = 0; i < octaves; i++)
         {
             totalNoise += GetSimplePerlin(x * frequency, y * frequency, z * frequency) * amplitude;
@@ -103,10 +111,20 @@ public class PerlinGenerator : MonoBehaviour {
 
         float finalNoise = totalNoise / maxPossibleNoise;
 
-        if(step > 0)
+        if (steps.Length > 0)
         {
-            if (finalNoise >= step) { finalNoise = 1; }
-            else { finalNoise = 0; }
+            float newNoise = 0.0f;
+            for (int i = steps.Length - 1; i >= 0; i--)
+            {
+                if (finalNoise > steps[i])
+                {
+                    
+                    newNoise = stepValue * ((float)i + 1.0f);
+                    //Debug.Log(finalNoise.ToString() + " > " + steps[i].ToString() + " newNoise: " + newNoise.ToString());
+                    break;
+                }
+            }
+            finalNoise = newNoise;
         }
 
         return finalNoise;
@@ -174,12 +192,6 @@ public class PerlinGenerator : MonoBehaviour {
         if(repeat > 0) { num %= repeat; }
 
         return num;
-    }
-
-
-    private void Start()
-    {
-
     }
 
 }

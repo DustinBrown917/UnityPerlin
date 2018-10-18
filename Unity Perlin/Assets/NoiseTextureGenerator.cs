@@ -7,7 +7,6 @@ public class NoiseTextureGenerator : MonoBehaviour {
     public int height = 256;
     public int width = 256;
 
-    public float scale;
     public PerlinGenerator pg;
 
     private void Start()

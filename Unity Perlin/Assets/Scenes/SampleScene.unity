@@ -220,9 +220,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62188ae2a870ffe439b4d2b54db5f001, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 64
-  width: 64
-  scale: 10
+  height: 256
+  width: 256
   pg: {fileID: 1701337098}
 --- !u!23 &1701337095
 MeshRenderer:
@@ -294,4 +293,7 @@ MonoBehaviour:
   scale: 5
   octaves: 3
   persistence: 0.5
-  step: 0.5
+  steps:
+  - 0.45
+  - 0.55
+  - 0.65
